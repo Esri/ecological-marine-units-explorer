@@ -1,6 +1,6 @@
 # Exploring Ecological Marine Units
 
-[![N|Solid](ecological-marine-units-explorer/images/splash-screen.png)](http://livingatlas.arcgis.com/emu/)
+[![N|Solid](https://github.com/ArcGIS/ecological-marine-units-explorer/blob/master/images/splash-screen.png)](http://livingatlas.arcgis.com/emu/)
 
 
 The [Ecological Marine Units Explorer] is a web-based application that is used to explore different water characteristics available from NOAA's World Ocean Atlas. The interactive map allows you to zoom and pan and interact with the data by clicking on the map. Clicking the points on the map enables you to explore the depth (vertical) profile and associated oceanographic information for the selected location.
