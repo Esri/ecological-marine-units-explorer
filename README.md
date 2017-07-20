@@ -1,7 +1,5 @@
 # Exploring Ecological Marine Units
 
-[![N|Solid](http://mms.businesswire.com/media/20170213005133/en/569288/5/esri_logo17.jpg)](http://www.esri.com/ecological-marine-units)
-
 The [Ecological Marine Units Explorer] is a web-based application that is used to explore different water characteristics available from NOAA's World Ocean Atlas. The interactive map allows you to zoom and pan and interact with the data by clicking on the map. Clicking the points on the map enables you to explore the depth (vertical) profile and associated oceanographic information for the selected location.
 
 ### Additional Links
@@ -11,6 +9,7 @@ The [Ecological Marine Units Explorer] is a web-based application that is used t
 
 The Ecological Marine Units project is an innovative public-private partnership led by Esri and the USGS.
 [![N|Solid](http://www.esri.com/~/media/Images/Content/Ecological-Marine-Units/logos)](http://www.esri.com/~/media/Images/Content/Ecological-Marine-Units/logos)
+
 
 ----
 #### License
