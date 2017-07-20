@@ -1,0 +1,54 @@
+#chartPopup {
+    width: 220px !important;
+    height: 170px;
+    background-color: #fff;
+    border-radius: 4px;
+    color: #454545
+    -webkit-font-smoothing: antialiased;
+    font-size: 0.72em;
+    font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+    opacity: 0.95;
+    position: absolute;
+    z-index: 10000;
+    -webkit-box-shadow: 10px 10px 37px 0px rgba(97,97,97,1);
+    -moz-box-shadow: 10px 10px 37px 0px rgba(97,97,97,1);
+    box-shadow: 10px 10px 37px 0px rgba(97,97,97,1);
+}
+
+.row-label {
+    text-align: right;
+}
+
+#clusterTablePopup {
+    width: 220px !important;
+    height: 170px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    color: #454545;
+    -webkit-font-smoothing: antialiased;
+    font-size: 0.72em;
+    font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+    opacity: 0.95;
+    position: absolute;
+    z-index: 10000;
+    -webkit-box-shadow: 10px 10px 37px 0px rgba(97,97,97,1);
+    -moz-box-shadow: 10px 10px 37px 0px rgba(97,97,97,1);
+    box-shadow: 10px 10px 37px 0px rgba(97,97,97,1);
+}
+
+/* table tooltip */
+.dijitTooltipContainer {
+    margin-left: -30px;
+}
+
+.dijitTooltipConnector {
+    display: none !important;
+}
+
+.chart-tooltip-style {
+    text-align: right;
+}
+
+.chart-tooltip-unit-style {
+    text-align: left;
+}
