@@ -1,0 +1,2 @@
+# ecological-marine-units-explorer
+The Ecological Marine Unit Explorer is a web-based application that is used to explore different water characteristics available from NOAA's World Ocean Atlas.  The interactive map allows you to zoom and pan and interact with the data by clicking on the map. Clicking the points on the map enables you to explore the depth (vertical) profile and associated oceanographic information for the selected location.
