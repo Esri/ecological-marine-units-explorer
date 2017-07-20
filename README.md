@@ -11,4 +11,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 A copy of the license is available in the repository's license.txt file.
 
-[](Esri Tags: ArcGIS ArcGIS Online Web Application boilerplate template widget dijit Esri JavaScript application USGS Landsat ArcGIS ImageServer) [](Esri Language: JavaScript)
+[](Esri Tags: ArcGIS Web Application Esri JavaScript application Oceans Ecological Marine Units) [](Esri Language: JavaScript)
