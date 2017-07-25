@@ -1,3 +1,33 @@
+/*
+ | Copyright 2017 Esri
+ |
+ | Licensed under the Apache License, Version 2.0 (the "License");
+ | you may not use this file except in compliance with the License.
+ | You may obtain a copy of the License at
+ |
+ |    http://www.apache.org/licenses/LICENSE-2.0
+ |
+ | Unless required by applicable law or agreed to in writing, software
+ | distributed under the License is distributed on an "AS IS" BASIS,
+ | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ | See the License for the specific language governing permissions and
+ | limitations under the License.
+ */
+
+/*
+ |
+ |  UI/UXD
+ |      Sean Breyer
+ |      Andrew Skinner
+ |      Keith VanGraafeiland
+ |
+ |  Application/Visualization
+ |      Required to use Dojo's charting API and not pull in any 3rd party dependencies.
+ |      An alternative (and possibly better) approach would have been to use D3.
+ |
+ |  CSS Framework
+ |      Still consumes Esri's older CSS framework, Tailcoat.
+ */
 require([
     // Dojo Charts
     "dojox/charting/action2d/Tooltip",
@@ -100,7 +130,7 @@ require([
         selectedQtrID = null,
         selectedCluster = null,
 
-    // NOTE: Adding 2 layers per Sean Breyer's request
+    // NOTE: Adding 2 layers per SB's request
     // ocean fill
         oceansFill = new FeatureLayer(Config.ClusterPolygons_FEATURE_SERVICE_URL, {
             mode: FeatureLayer.MODE_ONDEMAND,
@@ -467,8 +497,6 @@ require([
             userInterfaceUtils.showTableLoader(".summary-table-loader", true);
             // selected cluster
             selectedCluster = evt.cy;
-            //console.debug("BEGIN --------------------------------------------");
-            //console.debug("selectedCluster", selectedCluster);
             // query store to get cluster ID (it's not returned in the click event on the chart);
             clusterData = woaPointsMergedStore.query({
                 "UnitBottom": selectedCluster
@@ -508,7 +536,6 @@ require([
 
     function dropdownListSelectHandler() {
         domStyle.set(query(".variable-dropdown-content")[0], "display", "none");
-
 
         query(".dropdown")[0].innerHTML = this.innerHTML;
         // set the selected variable (i.e. temp, salinity, etc...)

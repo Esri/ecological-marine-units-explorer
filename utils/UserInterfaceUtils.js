@@ -64,22 +64,6 @@ define([
             return this.mapContentPane;
         },
 
-        /*updateSignInDropdown: function () {
-         query(".authenticated-user")[0].innerText = " " + Config.portalUser.firstName;
-         if (esriLang.isDefined(Config.portalUser.thumbnailUrl)) {
-         domAttr.set(query(".user-profile-thumbnail-src")[0], "src", Config.portalUser.thumbnailUrl);
-         } else {
-         domAttr.set(query(".user-profile-thumbnail-src")[0], "src", Config.NO_USER_PROFILE_THUMBNAIL_IMAGE);
-         }
-         query(".authenticated-user-fullname")[0].innerText = Config.portalUser.fullName;
-         query(".authenticated-user-username")[0].innerText = Config.portalUser.username;
-         },*/
-
-        /**
-         * "Message" overlay
-         *
-         * @param show
-         */
         showOverlay: function (show) {
             if (show) {
                 domStyle.set(query(".overlay")[0], "display", "block");
@@ -114,16 +98,6 @@ define([
             });
             overviewMapDijit.startup();
         },
-
-        /**
-         * Signout button handler
-         *
-         * @param evt
-         */
-        /*signOutBtnClickHandler: function (evt) {
-         Config.portal.signOut();
-         location.reload();
-         },*/
 
         /**
          * Update the x-axis title based on the selected variable
