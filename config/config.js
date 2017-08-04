@@ -1,7 +1,7 @@
 /*global define,location */
 /*jslint sloppy:true */
 /*
- | Copyright 2014 Esri
+ | Copyright 2017 Esri
  |
  | Licensed under the Apache License, Version 2.0 (the "License");
  | you may not use this file except in compliance with the License.
