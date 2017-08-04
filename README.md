@@ -3,9 +3,10 @@
 [![N|Solid](https://github.com/ArcGIS/ecological-marine-units-explorer/blob/master/images/splash-screen.png)](http://livingatlas.arcgis.com/emu/)
 
 
-The [Ecological Marine Units Explorer] is a web-based application that is used to explore different water characteristics available from NOAA's World Ocean Atlas. The interactive map allows you to zoom and pan and interact with the data by clicking on the map. Clicking the points on the map enables you to explore the depth (vertical) profile and associated oceanographic information for the selected location.
+The [Ecological Marine Units Explorer] is a web-based application that is used to explore different water characteristics available from NOAA's World Ocean Atlas. 
 
 ## Features
+* The interactive map allows you to zoom and pan and interact with the data by clicking on the map. Clicking the points on the map enables you to explore the depth (vertical) profile and associated oceanographic information for the selected location.
 
 ## Instructions
 1. Fork and then clone the repo. 
@@ -42,10 +43,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-A copy of the license is available in the repository's [license.txt]( https://raw.github.com/Esri/quickstart-map-js/master/license.txt) file.
-
-[](Esri Tags: ArcGIS Web Mapping QuickStart)
-[](Esri Language: JavaScript)​
+A copy of the license is available in the repository's [license.txt]( https://raw.github.com/Esri/ecological-marine-units-explorer/master/LICENSE.txt) file.
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
