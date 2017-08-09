@@ -10,7 +10,7 @@ The [Ecological Marine Units Explorer] is a web-based application that is used t
 
 ## Instructions
 1. Fork and then clone the repo. 
-2. Navigate to the home directory of teh repo on your local machine with the web server running and view the app
+2. Navigate to the home directory of the repo on your local machine with the web server running and view the app
 
 ## Requirements
 * Notepad or your favorite HTML editor
