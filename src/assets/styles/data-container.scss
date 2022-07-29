@@ -1,0 +1,20 @@
+#data-container {
+  opacity: 1;
+  transition: opacity 0.5s;
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  height: 320px;
+  display: none;
+}
+
+#data-container.fade-out {
+  opacity: 0;
+  display: none;
+}
+
+#data-container.fade-in {
+  opacity: 1;
+  display: block;
+}

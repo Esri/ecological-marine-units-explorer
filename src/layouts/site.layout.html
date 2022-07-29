@@ -1,0 +1,347 @@
+<html dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width">
+    <title>EMU - Explorer</title>
+
+    <link rel="icon" href="//www.esri.com/favicon.ico">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/dark/main.css">
+</head>
+
+<body lang="en" class="calcite-theme-dark">
+    <!-- Loading indicator -->
+    <calcite-loader
+        id="appLoadingIndicator"
+        active="true"
+        type="indeterminate"
+        scale="l"
+        no-padding=""
+        value="0"
+        style="
+                --calcite-ui-brand: rgb(50,88,170);
+                --calcite-ui-brand-hover: rgb(77,160,220);
+                --calcite-ui-brand-press: rgb(113,234,234);"
+></calcite-loader>
+
+    <!-- Map/Scene View -->
+    <!-- <div id="viewContainer" class="view-container"></div>-->
+    <div id="mapViewContainer" class="view-container"></div>
+    <div id="sceneViewContainer" class="view-container"></div>
+
+    <!-- Application overlay -->
+    <div id="app-overlay" style="display: none;"></div>
+
+    <div class="content-container" style="display: none;">
+        <!-- Menu component container -->
+        <div class="menu-component-container scroller js-animation animate-fade-in">
+            <!-- menu component -->
+            <div class="menu-component">
+
+                <!-- menu background -->
+                <div class="menu-background"></div>
+
+                <!-- menu collapsed -->
+                <div class="menu-foreground">
+                    <div class="menu-header-container">
+                        <!-- Hamburger icon container -->
+                        <div class="menu-header-icon-container">
+                            <div class="menu-header-icon">
+                                <calcite-icon icon="hamburger" scale="m"></calcite-icon>
+                            </div>
+                        </div>
+                        <!-- Menu label -->
+                        <div class="menu-header-label">ECOLOGICAL MARINE UNIT <span class="avenir-italic">explorer</span></div>
+                        <!-- Share icon container -->
+                        <div class="menu-header-icon-container">
+                            <div class="menu-header-icon">
+                                <calcite-icon class="share-icon" icon="share" scale="m"></calcite-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- menu expanded -->
+                <div class="menu-expanded hide">
+                    <!-- Basemap -->
+                    <div>
+                        <div class="menu-item-label trailer-quarter">Basemap</div>
+                        <div class="menu-item-content">
+                            <div class="item basemap-item" data-view-type="2d">
+                                <div>
+                                    <img class="menu_item_img basemap_2d" alt="2D" />
+                                </div>
+                                <div>
+                                    <div class="menu-item-label">2D</div>
+                                    <div class="menu-item-description font-size--1">Rapid top-down view capable of a global view</div>
+                                </div>
+                            </div>
+                            <div class="item basemap-item" data-view-type="3d">
+                                <div>
+                                    <img class="menu_item_img basemap_3d" alt="3D" />
+                                </div>
+                                <div>
+                                    <div class="menu-item-label">3D</div>
+                                    <div class="menu-item-description font-size--1">Immersive view of actual EMU water columns</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- divider -->
+                    <div class="divider leader-1 trailer-1"></div>
+
+                    <!-- Change Layer(s) -->
+                    <div>
+                        <div class="menu-item-label trailer-quarter">Content</div>
+                        <div class="menu-item-content">
+                            <div class="item content-item" data-content-type="emu-current-layer">
+                                <div>
+                                    <img class="menu_item_img current-emu-img" alt="Current EMU" />
+                                </div>
+                                <div>
+                                    <div class="menu-item-label">Current EMUs</div>
+                                    <div class="menu-item-description font-size--1">The latest version of Ecological Marine Units, calculated in 2018</div>
+                                </div>
+                            </div>
+                            <div class="item content-item" data-content-type="emu-change-layer">
+                                <div>
+                                    <img class="menu_item_img emu-change-img" alt="EMU Change" />
+                                </div>
+                                <div>
+                                    <div class="menu-item-label">EMU Change, 2013-2018</div>
+                                    <div class="menu-item-description font-size--1">Where EMU classification has changed due to phenomena or underlying model improvements</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- divider -->
+                    <div class="divider leader-1 trailer-1"></div>
+
+                    <!-- About -->
+                    <div>
+                        <div class="menu-item-label trailer-quarter">About</div>
+                        <div class="menu-item-description font-size--1">
+                            <div>The Ecological Marine Units (EMU) explorer portrays a 3-dimensional classification of physiographic and ecological information about ocean water.</div>
+                            <div>Choose any ocean location to see these statistically-unique marine slices from sea level down to the ocean floor.</div>
+                        </div>
+                    </div>
+
+                    <!-- divider -->
+                    <div class="divider leader-1 trailer-1"></div>
+
+                    <!-- EMU key legend -->
+                    <div>
+                        <div class="menu-item-label trailer-quarter">EMU Key</div>
+                        <div class="menu-item-description font-size--1">
+                            A three-dimensional mesh of over 50 million points was fed into a systematic statistical clustering which generated XX ecologically/physiographically unique classifications of ocean water: Ecological Marine Units (EMU).
+                            This segmentation is represented as slices of the water column, from sea surface to floor, at a 1/4 degree by 1/4 degree resolution.
+                        </div>
+                        <div id="menuLegend"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overview Map -->
+        <div class="overview-map-container">
+            <div id="overviewMap"></div>
+            <div id="overviewMapReflection"></div>
+            <div id="overviewMapShadow"></div>
+        </div>
+
+        <!-- Slider -->
+        <!--<div class="slider-container">
+            <div class="slider-background"></div>
+            <div id="value-slider" class="slider-foreground"></div>
+        </div>-->
+
+        <!-- Selected location -->
+        <div id=" ">
+            <!--<div id="selectedDepthBackground">
+                <span class="selected-location-common-name"></span>
+                <span class="selected-location-depth"></span>
+            </div>-->
+            <div id="selectedDepthForeground">
+                <span class="selected-location-common-name"></span>
+                <span class="selected-location-depth"></span>
+            </div>
+        </div>
+
+        <!-- Data/Charts -->
+        <div id="data-container">
+            <!-- bottom component background -->
+            <div class="data-component-background"></div>
+            <!-- bottom component foreground -->
+            <div class="data-component-foreground">
+
+            <!-- close button -->
+            <div class="close-data-container-button">
+                <calcite-icon icon="x-circle" scale="l"></calcite-icon>
+            </div>
+
+            <!-- data -->
+            <div class="data-component">
+
+                <!-- legend -->
+                <div class="legend-component">
+                    <div class="legend-component-header">
+                        <div class="legend-component-hdr-container">
+                            <div class="flex-item">
+                                <div class="flex-item-content">
+                                    <div class="key-column"><br />EMU</div>
+                                    <div class="depth-column">Depth and (Thickness) m</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legend-component-content"></div>
+                </div>
+
+                <!-- charts -->
+                <div class="charts-component">
+                    <div class="charts-component-header">
+                        <div class="flex-chart chart-header-container">
+                            <div class="flex-item">
+                                <div class="flex-item-content">
+                                    <div class="chart-header-label">Temperature</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-header-container">
+                            <div class="flex-item">
+                                <div class="flex-item-content">
+                                    <div class="chart-header-label">Salinity</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-header-container">
+                            <div class="flex-item">
+                                <div class="flex-item-content">
+                                    <div class="chart-header-label">Dissolved O<sub>2</sub></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-header-container">
+                            <div class="flex-item">
+                                <div class="flex-item-content">
+                                    <div class="chart-header-label">Phosphate</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-header-container">
+                            <div class="flex-item">
+                                <div class="flex-item-content">
+                                    <div class="chart-header-label">Nitrate</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-header-container">
+                            <div class="flex-item">
+                                <div class="flex-item-content">
+                                    <div class="chart-header-label">Silicate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-component-content">
+                        <div class="flex-chart chart-container">
+                            <div id="tempChartContainer" class="flex-item">
+                                <div class="flex-item-content">
+                                    <div id="tempChart"></div>
+                                    <div class="chart-zoom-icon hide">
+                                        <calcite-icon icon="zoom-out-fixed" scale="l"></calcite-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-container">
+                            <div id="salinityChartContainer" class="flex-item">
+                                <div class="flex-item-content">
+                                    <div id="salinityChart"></div>
+                                    <div class="chart-zoom-icon hide">
+                                        <calcite-icon icon="zoom-out-fixed" scale="l"></calcite-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-container">
+                            <div id="dissO2ChartContainer" class="flex-item">
+                                <div class="flex-item-content">
+                                    <div id="dissO2Chart"></div>
+                                    <div class="chart-zoom-icon hide">
+                                        <calcite-icon icon="zoom-out-fixed" scale="l"></calcite-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-container">
+                            <div id="phosphateChartContainer" class="flex-item">
+                                <div class="flex-item-content">
+                                    <div id="phosphateChart"></div>
+                                    <div class="chart-zoom-icon hide">
+                                        <calcite-icon icon="zoom-out-fixed" scale="l"></calcite-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-container">
+                            <div id="nitrateChartContainer" class="flex-item">
+                                <div class="flex-item-content">
+                                    <div id="nitrateChart"></div>
+                                    <div class="chart-zoom-icon hide">
+                                        <calcite-icon icon="zoom-out-fixed" scale="l"></calcite-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-chart chart-container">
+                            <div id="silicateChartContainer" class="flex-item">
+                                <div class="flex-item-content">
+                                    <div id="silicateChart"></div>
+                                    <div class="chart-zoom-icon hide">
+                                        <calcite-icon icon="zoom-out-fixed" scale="l"></calcite-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- mobile navigation -->
+            <div class="mobile-nav">
+                <ul class="charts-3">
+                    <li><div class="charts-1-3" data-vars="1,2,3"></div></li>
+                    <li><div class="charts-4-6" data-vars="4,5,6"></div></li>
+                </ul>
+
+                <ul class="charts-2">
+                    <li><div class="charts-1-2" data-vars="1,2"></div></li>
+                    <li><div class="charts-3-4" data-vars="3,4"></div></li>
+                    <li><div class="charts-5-6" data-vars="5,6"></div></li>
+                </ul>
+
+                <ul class="charts-1">
+                    <li><div class="chart-1" data-vars="1"></div></li>
+                    <li><div class="chart-2" data-vars="2"></div></li>
+                    <li><div class="chart-3" data-vars="3"></div></li>
+                    <li><div class="chart-4" data-vars="4"></div></li>
+                    <li><div class="chart-5" data-vars="5"></div></li>
+                    <li><div class="chart-6" data-vars="6"></div></li>
+                </ul>
+            </div>
+
+        </div>
+        </div>
+
+        <div class="area-plot-tooltip"></div>
+        <div class="emu-change-tooltip"></div>
+        <div class="scatter-plot-tooltip"></div>
+    </div>
+</body>
+</html>

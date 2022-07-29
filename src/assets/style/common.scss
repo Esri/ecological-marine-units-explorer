@@ -1,0 +1,44 @@
+.hide {
+  display: none;
+}
+
+.scroller {
+  scrollbar-color: #888 #4b4b4b;
+  scrollbar-width: thin;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #4b4b4b;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.font-size--1 {
+  font-size: var(--calcite-font-size--1);
+}
+
+.font-size--2 {
+  font-size: var(--calcite-font-size--2);
+}
+
+.font-size--3 {
+  font-size: var(--calcite-font-size--3);
+}
+
+.avenir-italic {
+  font-style: italic;
+}

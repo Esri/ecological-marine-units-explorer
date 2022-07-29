@@ -1,0 +1,278 @@
+<html dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+	<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+	<meta name="viewport" content="width=device-width">
+	<title>EMU - Explorer</title>
+
+	<link rel="icon" href="//www.esri.com/favicon.ico">
+	<link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/dark/main.css">
+</head>
+
+<body class="calcite-theme-dark">
+
+<calcite-loader
+		id="appLoadingIndicator"
+		active="true"
+		type="indeterminate"
+		scale="l"
+		no-padding=""
+		value="0"
+		style="
+                --calcite-ui-brand: rgb(50,88,170);
+                --calcite-ui-brand-hover: rgb(77,160,220);
+                --calcite-ui-brand-press: rgb(113,234,234);"
+></calcite-loader>
+
+<calcite-alert
+		id="noDataAlert"
+		class="calcite-theme-dark"
+		active="false"
+		auto-dismiss
+		auto-dismiss-duration="fast"
+		color="blue"
+		icon="layer-points"
+		scale="m">
+	<div slot="title" class="no-data-title"></div>
+	<div slot="message" class="no-data-message"></div>
+</calcite-alert>
+
+<calcite-modal class="share-modal" aria-labelledby="share-modal" scale="m" width="s">
+	<div slot="header" id="modal-title">EMU Application</div>
+	<div slot="content">
+		<div class="share-modal-row">
+			<div class="share-modal-column share-modal-left">
+				<calcite-input id="copyUrl" label="copy-url" scale="m" type="url" value=""></calcite-input>
+			</div>
+			<div class="share-modal-column share-modal-right">
+				<calcite-button
+						class="copy-bitly-url"
+						data-clipboard-target="#copyUrl"
+						data-clipboard-text=""
+						appearance="solid"
+						color="blue"
+						scale="m"
+						icon-end="copy-to-clipboard"></calcite-button>
+			</div>
+		</div>
+	</div>
+</calcite-modal>
+
+<div id="app-overlay" style="display: none;"></div>
+
+<div class="content-container" style="display: none;">
+	<div id="sceneViewContainer" class="view-container"></div>
+	<div id="mapViewContainer" class="view-container"></div>
+
+	<div class="menu-component-container scroller js-animation animate-fade-in hide">
+		<!-- menu header -->
+		<div class="menu-component">
+			<!-- menu header background -->
+			<div class="menu-background"></div>
+			<!-- menu header foreground -->
+			<div class="menu-foreground">
+				<div class="menu-header-container">
+					<div class="menu-header-icon-container">
+						<div class="menu-header-icon">
+							<calcite-icon icon="hamburger" scale="m"></calcite-icon>
+						</div>
+					</div>
+					<div class="menu-header-label">ECOLOGICAL MARINE UNIT <span class="avenir-italic">explorer</span></div>
+					<div class="menu-header-icon-container">
+						<div class="menu-header-icon">
+							<calcite-icon class="share-icon" icon="share" scale="m"></calcite-icon>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="menu-expanded hide">
+				<div>
+					<div class="menu-item-label trailer-quarter">Basemap</div>
+					<div class="menu-item-content">
+						<div class="item basemap-item" data-view-type="2d">
+							<div>
+								<img class="menu_item_img basemap_2d" alt="2D" />
+							</div>
+							<div>
+								<div class="menu-item-label">2D</div>
+								<div class="menu-item-description font-size--1">Rapid top-down view capable of a global view</div>
+							</div>
+						</div>
+						<div class="item basemap-item" data-view-type="3d">
+							<div>
+								<img class="menu_item_img basemap_3d" alt="3D" />
+							</div>
+							<div>
+								<div class="menu-item-label">3D</div>
+								<div class="menu-item-description font-size--1">Immersive view of actual EMU water columns</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="divider leader-1 trailer-1"></div>
+
+				<div>
+					<div class="menu-item-label trailer-quarter">Content</div>
+					<div class="menu-item-content">
+						<!-- -->
+						<div class="item content-item emu-current-layer">
+							<div>
+								<img class="menu_item_img current-emu-img" alt="Current EMU" />
+							</div>
+							<div>
+								<div class="menu-item-label">Current EMUs</div>
+								<div class="menu-item-description font-size--1">The latest version of Ecological Marine Units, calculated in 2018</div>
+							</div>
+						</div>
+						<div class="item content-item emu-change-layer">
+							<div>
+								<img class="menu_item_img emu-change-img" alt="EMU Change" />
+							</div>
+							<div>
+								<div class="menu-item-label">EMU Change, 2013-2018</div>
+								<div class="menu-item-description font-size--1">Where EMU classification has changed due to phenomena or underlying model improvements</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="divider leader-1 trailer-1"></div>
+
+				<div>
+					<div class="menu-item-label trailer-quarter">About</div>
+					<div class="menu-item-description font-size--1">
+						<div>
+							The Ecological Marine Units (EMU) explorer portrays a 3-dimensional classification of physiographic and ecological information about ocean water.
+						</div>
+						<div>
+							Choose any ocean location to see these statistically-unique marine slices from sea level down to the ocean floor.
+						</div>
+					</div>
+				</div>
+				<div class="divider leader-1 trailer-1"></div>
+
+				<div>
+					<div class="menu-item-label trailer-quarter">EMU Key</div>
+					<div class="menu-item-description font-size--1">
+						A three-dimensional mesh of over 50 million points was fed into a systematic statistical clustering which generated XX ecologically/physiographically unique classifications of ocean water: Ecological Marine Units (EMU).
+						This segmentation is represented as slices of the water column, from sea surface to floor, at a 1/4 degree by 1/4 degree resolution.
+					</div>
+					<div id="menuLegend"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="overview-map-container hide">
+		<div id="overviewMap"></div>
+		<div id="overviewMapReflection"></div>
+		<div id="overviewMapShadow"></div>
+	</div>
+
+	<div id="selectedDepthContainer">
+		<div id="selectedDepthBackground">
+			<span class="selected-location-common-name"></span>
+			<span class="selected-location-depth"></span>
+		</div>
+		<div id="selectedDepthForeground">
+			<span class="selected-location-common-name"></span>
+			<span class="selected-location-depth"></span>
+		</div>
+	</div>
+
+	<div id="data-container">
+		<div class="data-component-background"></div>
+		<div class="data-component-foreground">
+			<div class="container">
+				<div class="legend column">
+					<div class="col-hdr">
+						<div style="width: 50px; float: left; padding-top: 1em;">EMU</div>
+						<div style="width: 100px; float: right;">Depth and (Thickness) m</div>
+					</div>
+					<div class="depth-mask"></div>
+					<div id="emuDepths" class="col-container"></div>
+				</div>
+
+				<div class="data-var temperature column">
+					<div class="col-hdr">
+						<div class="chart-title">Temperature</div>
+					</div>
+					<div class="chart-mask"></div>
+					<button id="tempChartResetBtn" class="reset-zoom-btn" style="position:absolute; bottom: 5px;">
+						<calcite-icon icon="reset" scale="s"></calcite-icon>
+					</button>
+					<div id="tempChart" class="col-container"></div>
+				</div>
+
+				<div class="data-var salinity column">
+					<div class="col-hdr">
+						<div class="chart-title">+-</div>
+					</div>
+					<div class="chart-mask"></div>
+					<button id="salinityChartResetBtn" class="reset-zoom-btn" style="position:absolute; bottom: 5px;">
+						<calcite-icon icon="reset" scale="s"></calcite-icon>
+					</button>
+					<div id="salinityChart" class="col-container"></div>
+				</div>
+
+				<div class="data-var dissolvedO2 column">
+					<div class="col-hdr">
+						<div class="chart-title">Dissolved O<sub>2</sub></div>
+					</div>
+					<div class="chart-mask"></div>
+
+					<button id="dissO2ChartResetBtn" class="reset-zoom-btn" style="position:absolute; bottom: 5px;">
+						<calcite-icon icon="reset" scale="s"></calcite-icon>
+					</button>
+
+					<div id="dissO2Chart" class="col-container"></div>
+				</div>
+
+				<div class="data-var phosphate column">
+					<div class="col-hdr">
+						<div class="chart-title">Phosphate</div>
+					</div>
+					<div class="chart-mask"></div>
+					<button id="phosphateChartResetBtn" class="reset-zoom-btn" style="position:absolute; bottom: 5px;">
+						<calcite-icon icon="reset" scale="s"></calcite-icon>
+					</button>
+					<div id="phosphateChart" class="col-container"></div>
+				</div>
+
+				<div class="data-var nitrate column">
+					<div class="col-hdr">
+						<div class="chart-title">Nitrate</div>
+					</div>
+					<div class="chart-mask"></div>
+					<button id="nitrateChartResetBtn" class="reset-zoom-btn" style="position:absolute; bottom: 5px;">
+						<calcite-icon icon="reset" scale="s"></calcite-icon>
+					</button>
+					<div id="nitrateChart" class="col-container"></div>
+				</div>
+
+				<div class="data-var silicate column">
+					<div class="col-hdr">
+						<div class="chart-title">Silicate</div>
+					</div>
+					<div class="chart-mask"></div>
+					<button id="silicateChartResetBtn" class="reset-zoom-btn" style="position:absolute; bottom: 5px;">
+						<calcite-icon icon="reset" scale="s"></calcite-icon>
+					</button>
+					<div id="silicateChart" class="col-container"></div>
+				</div>
+			</div>
+		</div>
+		<button class="close-btn">
+			<calcite-icon icon="x-circle" scale="m"></calcite-icon>
+		</button>
+	</div>
+
+	<div class="area-plot-tooltip"></div>
+	<div class="emu-change-tooltip"></div>
+	<div class="scatter-plot-tooltip"></div>
+</div>
+
+</body>
+
+</html>

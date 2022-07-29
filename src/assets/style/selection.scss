@@ -1,0 +1,45 @@
+#selectedDepthContainer {
+  opacity: 1;
+  transition: opacity 0.5s;
+  position: absolute;
+  left: 10px;
+  bottom: 350px;
+  height: 2rem;
+  z-index: 0;
+  display: none;
+}
+
+#selectedDepthContainer.fade-out {
+  opacity: 0;
+  display: none;
+}
+
+#selectedDepthContainer.fade-in {
+  opacity: 1;
+  display: block;
+}
+
+#selectedDepthBackground {
+  position: absolute;
+  z-index: 101;
+  padding: 0.5rem 0.5rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  filter: blur(4px);
+  height: 100%;
+
+  font-weight: var(--calcite-font-weight-bold);
+  font-size: var(--calcite-font-size--2);
+  width: max-content;
+  color: transparent;
+}
+
+#selectedDepthForeground {
+  position: absolute;
+  z-index: 102;
+  padding: 1rem 0.5rem;
+
+  font-weight: var(--calcite-font-weight-bold);
+  font-size: var(--calcite-font-size--2);
+  width: max-content;
+  color: #4DA6FF;
+}

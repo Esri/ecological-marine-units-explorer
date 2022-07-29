@@ -1,0 +1,929 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Copy To Clipboard Interaction Demo</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            color: #4DA6FF;
+        }
+
+        .container {
+            margin: 150px auto;
+            max-width: 640px;
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        .copy-click {
+            position: relative;
+            padding-bottom: 2px;
+            text-decoration: none;
+            cursor: copy;
+            color: #484848;
+            border-bottom: 1px dashed #767676;
+            transition: background-color calc(var(--duration) * 2) var(--ease);
+        }
+
+        .copy-click:after {
+            content: attr(data-tooltip-text);
+            position: absolute;
+            bottom: calc(100% - 80px);
+            left: 50%;
+            padding: 8px 16px;
+            white-space: nowrap;
+            background-color: #181818;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 0 0 -12px rgba(0, 0, 0, 0);
+            pointer-events: none;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            opacity: 0;
+            -webkit-transform: translate(-50%, 12px);
+            transform: translate(-50%, 12px);
+            transition: box-shadow calc(var(--duration) / 1.5) var(--bounce), opacity calc(var(--duration) / 1.5) var(--bounce), -webkit-transform calc(var(--duration) / 1.5) var(--bounce);
+            transition: box-shadow calc(var(--duration) / 1.5) var(--bounce), opacity calc(var(--duration) / 1.5) var(--bounce), transform calc(var(--duration) / 1.5) var(--bounce);
+            transition: box-shadow calc(var(--duration) / 1.5) var(--bounce), opacity calc(var(--duration) / 1.5) var(--bounce), transform calc(var(--duration) / 1.5) var(--bounce), -webkit-transform calc(var(--duration) / 1.5) var(--bounce);
+        }
+
+        .copy-click.is-hovered:after {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 1;
+            -webkit-transform: translate(-50%, 0);
+            transform: translate(-50%, 0);
+            transition-timing-function: var(--ease);
+        }
+
+        .copy-click.is-copied {
+            /*background-color: yellow;*/
+        }
+
+        .copy-click.is-copied:after {
+            content: attr(data-tooltip-text-copied);
+        }
+
+
+
+
+        .data-container-background {
+            position: absolute;
+            left:1em;
+            right:1em;
+            bottom: 1em;
+            background: red;
+            height: 340px;
+            background: rgba(0, 0, 0, 0.7) 100% 100%;
+            filter: blur(4px);
+        }
+
+        .data-component-foreground {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .data-component {
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: row;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-align-content: stretch;
+            -ms-flex-line-pack: stretch;
+            align-content: stretch;
+            -webkit-align-items: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+            padding-top: .5em;
+            padding-left: 2em;
+            padding-right: 2em;
+            padding-bottom: 2em;
+            /*background: rgba(0, 0, 0, 0.7) 100% 100%;*/
+            /*filter: blur(4px);*/
+
+        }
+
+        .data-item:nth-child(1) {
+            -webkit-order: 0;
+            -ms-flex-order: 0;
+            order: 0;
+            -webkit-flex: 0 1 auto;
+            -ms-flex: 0 1 auto;
+            flex: 0 1 auto;
+            -webkit-align-self: auto;
+            -ms-flex-item-align: auto;
+            align-self: auto;
+            /*background: rgba(0, 0, 0, 0.7) 100% 100%;*/
+        }
+
+        .data-item:nth-child(2) {
+            -webkit-order: 0;
+            -ms-flex-order: 0;
+            order: 0;
+            -webkit-flex: 1 1 auto;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            -webkit-align-self: auto;
+            -ms-flex-item-align: auto;
+            align-self: auto;
+            /*background: rgba(0, 0, 0, 0.7) 100% 100%;*/
+        }
+
+        .flex-item-container {
+            -webkit-order: 0;
+            -ms-flex-order: 0;
+            order: 0;
+            -webkit-flex: 1 0 auto;
+            -ms-flex: 1 0 auto;
+            flex: 1 0 auto;
+            -webkit-align-self: auto;
+            -ms-flex-item-align: auto;
+            align-self: auto;
+            /*border: .05rem #494949 solid;*/
+        }
+        .flex-item {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flex-item-content {
+            width:100%;
+            text-align: center;
+        }
+
+        .chart-header-label {
+            width: 100%;
+        }
+
+
+        .depth-header-container {
+            font-size: .75em;
+            height: 35px;
+            min-height: 0;
+            max-height: 35px;
+            width: 150px;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-align-content: stretch;
+            -ms-flex-line-pack: stretch;
+            align-content: stretch;
+            -webkit-align-items: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+            /*background: #d2d2d2;
+            color: #505050;*/
+        }
+
+        .depth-values-container {
+            font-size: .75em;
+            max-height: 275px;
+            height: 275px;
+            min-height: 0;
+            width: 150px;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-align-content: stretch;
+            -ms-flex-line-pack: stretch;
+            align-content: stretch;
+            -webkit-align-items: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.1) 70%, rgba(0, 0, 0, 0.65) 100%);
+            pointer-events: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .key-column {
+            width: 40%;
+            float:left;
+        }
+
+        .depth-column {
+            width: 60%;
+            float:right;
+        }
+
+
+        .flex-chart {
+            -webkit-order: 0;
+            -ms-flex-order: 0;
+            order: 0;
+            -webkit-flex: 1 1;
+            -ms-flex: 1 1;
+            flex: 1 1;
+            -webkit-align-self: auto;
+            -ms-flex-item-align: auto;
+            align-self: auto;
+            /*background: #3da8ff;
+            border: .05px red solid;*/
+        }
+
+        .charts-header-container {
+            font-size: .75em;
+            max-height: 35px;
+            height: 35px;
+            min-height: 0;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: row;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-align-content: stretch;
+            -ms-flex-line-pack: stretch;
+            align-content: stretch;
+            -webkit-align-items: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+        }
+
+        .charts-container {
+            height: 275px;
+            min-height: 0;
+            max-height: 275px;
+            font-size: .75em;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: row;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-align-content: stretch;
+            -ms-flex-line-pack: stretch;
+            align-content: stretch;
+            -webkit-align-items: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+        }
+
+
+
+        .close-data-container-button {
+            position: absolute;
+            right: 20px;
+            bottom: 320px;
+        }
+
+        .close-data-container-button:hover {
+            cursor: pointer;
+        }
+
+        .chart-zoom-icon {
+            position: relative;
+            top: 10em;
+        }
+
+        .chart-zoom-icon:hover {
+            cursor: pointer;
+        }
+
+        .custom-gradient {
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.1) 70%, rgba(0, 0, 0, 0.65) 100%);
+            pointer-events: none;
+        }
+
+
+
+
+
+
+        .mobile-nav {
+            bottom: 10px;
+            position: absolute;
+            justify-content: center;
+            align-content: center;
+            text-align: center;
+            left: 0;
+            right: 0;
+            display: flex;
+        }
+
+        .mobile-nav ul {
+            position: relative;
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            cursor: default;
+        }
+
+        .mobile-nav li {
+            position: relative;
+            display: block;
+            float: left;
+            margin: 0 16px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .mobile-nav li div {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            outline: none;
+            border-radius: 50%;
+            background-color: #fff;
+            background-color: rgba(255,255,255,0.3);
+            text-indent: -999em;
+            cursor: pointer; /* make the text accessible to screen readers */
+            position: absolute;
+            border: 3px solid white
+        }
+
+
+
+
+        /* Extra large devices (large laptops and desktops, 1200px and up) */
+        @media only screen and (max-width: 5000px) {
+            .mobile-nav {
+                display: none;
+            }
+
+            /*.desktop {
+                display: flex;
+            }
+            .lg-tablet {
+                display: flex;
+            }
+            .sm-tablet {
+                display: flex;
+            }*/
+
+            .charts-3 li {
+                display: none;
+            }
+
+            .charts-2 li {
+                display: none;
+            }
+
+            .charts-1 li {
+                display: none;
+            }
+        }
+
+        /* Large devices (laptops/desktops, 992px and up) */
+        @media only screen and (max-width: 1028px) {
+            .mobile-nav {
+                display: flex;
+            }
+
+            /*.desktop {
+                display: none;
+            }
+            .lg-tablet {
+                display: flex;
+            }
+            .sm-tablet {
+                display: flex;
+            }
+            */
+            .charts-3 li {
+                display: flex;
+            }
+
+            .charts-2 li {
+                display: none;
+            }
+
+            .charts-1 li {
+                display: none;
+            }
+        }
+
+        /* Medium devices (landscape tablets, 768px and up) */
+        @media only screen and (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+            }
+
+            /*.desktop {
+                display: none;
+            }
+            .lg-tablet {
+                display: none;
+            }
+            .sm-tablet {
+                display: flex;
+            }
+            */
+            .charts-3 li {
+                display: none;
+            }
+
+            .charts-2 li {
+                display: flex;
+            }
+
+            .charts-1 li {
+                display: none;
+            }
+        }
+
+        /* Extra small devices (phones, 600px and down) */
+        @media only screen and (max-width: 600px) {
+            .mobile-nav {
+                display: flex;
+            }
+
+            /*.desktop {
+                display: none;
+            }
+            .lg-tablet {
+                display: none;
+            }
+            .sm-tablet {
+                display: none;
+            }*/
+
+            .charts-3 li {
+                display: none;
+            }
+
+            .charts-2 li {
+                display: none;
+            }
+
+            .charts-1 li {
+                display: flex;
+            }
+        }
+
+    </style>
+</head>
+
+<body lang="en">
+
+
+<div class="data-container-background"></div>
+
+<div class="data-component-foreground">
+
+    <div class="close-data-container-button">
+        <calcite-icon icon="x-circle" scale="l"></calcite-icon>
+    </div>
+
+    <div class="data-component">
+
+        <div class="data-item">
+            <div class="depth-header-container">
+                <div class="flex-item-container">
+                    <div class="flex-item">
+                        <div class="flex-item-content">
+                            <div class="key-column"><br />EMU</div>
+                            <div class="depth-column">Depth and (Thickness) m</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="depth-values-container"></div>
+        </div>
+
+        <div class="data-item">
+            <div class="charts-header-container">
+                <div class="flex-chart chart-header-container">
+                    <div class="flex-item">
+                        <div class="flex-item-content">
+                            <div class="chart-header-label">Temperature</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-header-container">
+                    <div class="flex-item">
+                        <div class="flex-item-content">
+                            <div class="chart-header-label">Salinity</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-header-container">
+                    <div class="flex-item">
+                        <div class="flex-item-content">
+                            <div class="chart-header-label">Dissolved O<sub>2</sub></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-header-container">
+                    <div class="flex-item">
+                        <div class="flex-item-content">
+                            <div class="chart-header-label">Phosphate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-header-container">
+                    <div class="flex-item">
+                        <div class="flex-item-content">
+                            <div class="chart-header-label">Nitrate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-header-container">
+                    <div class="flex-item">
+                        <div class="flex-item-content">
+                            <div class="chart-header-label">Silicate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="flex-chart chart-container custom-gradient">
+                    <div id="tempChartContainer" class="flex-item">
+                        <div class="flex-item-content">
+                            <div style="width: 100%;">
+                                <div id="tempChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-container custom-gradient">
+                    <div id="salinityChartContainer" class="flex-item">
+                        <div class="flex-item-content">
+                            <div style="width: 100%;">
+                                <div id="salinityChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-container custom-gradient">
+                    <div id="dissO2ChartContainer" class="flex-item">
+                        <div class="flex-item-content">
+                            <div style="width: 100%;">
+                                <div id="dissO2Chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-container custom-gradient">
+                    <div id="phosphateChartContainer" class="flex-item">
+                        <div class="flex-item-content">
+                            <div style="width: 100%;">
+                                <div id="phosphateChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-container custom-gradient">
+                    <div id="nitrateChartContainer" class="flex-item">
+                        <div class="flex-item-content">
+                            <div style="width: 100%;">
+                                <div id="nitrateChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-chart chart-container custom-gradient">
+                    <div id="silicateChartContainer" class="flex-item">
+                        <div class="flex-item-content">
+                            <div style="width: 100%;">
+                                <div id="silicateChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-nav">
+        <ul class="charts-3">
+            <li><div class="charts-1-3" data-vars="1,2,3"></div></li>
+            <li><div class="charts-4-6" data-vars="4,5,6"></div></li>
+        </ul>
+
+        <ul class="charts-2">
+            <li><div class="charts-1-2" data-vars="1,2"></div></li>
+            <li><div class="charts-3-4" data-vars="3,4"></div></li>
+            <li><div class="charts-5-6" data-vars="5,6"></div></li>
+        </ul>
+
+        <ul class="charts-1">
+            <li><div class="chart-1" data-vars="1"></div></li>
+            <li><div class="chart-2" data-vars="2"></div></li>
+            <li><div class="chart-3" data-vars="3"></div></li>
+            <li><div class="chart-4" data-vars="4"></div></li>
+            <li><div class="chart-5" data-vars="5"></div></li>
+            <li><div class="chart-6" data-vars="6"></div></li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+<!--<div class="container">
+    <p>venenatis magna, id viverra urna lectus ut nibh.
+        <a href="" class="copy-click" data-tooltip-text="Click to copy"
+           data-tooltip-text-copied="Copied to clipboard">a string you can copy</a>. Vestibulum
+    </p>
+</div>-->
+
+
+<script>
+
+    const variables = ["temp", "salinity", "dissO2", "phosphate", "nitrate", "silicate"]
+
+    const depthValueParams = [{
+        "color": "rgb(204, 176, 186)",
+        "depth": "0 (125)",
+        "key": "8"
+    }, {
+        "color": "rgb(26, 82, 170)",
+        "depth": "-125 (50)",
+        "key": "36"
+    }, {
+        "color": "rgb(117, 112, 230)",
+        "depth": "-175 (175)",
+        "key": "10"
+    }, {
+        "color": "rgb(117, 145, 255)",
+        "depth": "-350 (450)",
+        "key": "33"
+    }, {
+        "color": "rgb(112, 140, 217)",
+        "depth": "-800 (2,200)",
+        "key": "3"
+    }, {
+        "color": "rgb(54, 71, 153)",
+        "depth": "-3,000 (1,100)",
+        "key": "13"
+    }]
+    const depthValuesContainerEle = document.querySelector(".depth-values-container");
+    depthValueParams.forEach((obj, i) => {
+        let depthValueContainer = document.createElement("div");
+        depthValueContainer.setAttribute("class", "flex-item-container");
+        depthValueContainer.style.background = depthValueParams[i].color;
+        depthValueContainer.innerHTML = `
+            <div class="flex-item custom-gradient">
+                <div class="flex-item-content">
+                    <div class="key-column">${depthValueParams[i].key}</div>
+                    <div class="depth-column">${depthValueParams[i].depth}</div>
+                </div>
+            </div>
+        `;
+        depthValuesContainerEle.appendChild(depthValueContainer);
+    });
+
+    variables.forEach(v => {
+        drawChart(v);
+    });
+
+    const navButtonsList = document.querySelector(".mobile-nav");
+    const chartContainers = document.querySelectorAll(".chart-container");
+    const chartHeaderContainers = document.querySelectorAll(".chart-header-container");
+
+    reportWindowSize()
+
+    function reportWindowSize(e) {
+        const windowWidth = window.innerWidth;
+        if (windowWidth <= 600) {
+            chartHeaderContainers.forEach(phoneChartContainer);
+            chartContainers.forEach(phoneChartContainer);
+        } else if (windowWidth > 600 && windowWidth <= 768) {
+            chartHeaderContainers.forEach(tabletChartContainer);
+            chartContainers.forEach(tabletChartContainer);
+        } else if (windowWidth > 768 && windowWidth <= 1028) {
+            chartHeaderContainers.forEach(laptopChartContainer);
+            chartContainers.forEach(laptopChartContainer);
+        } else if (windowWidth > 1028) {
+            chartHeaderContainers.forEach(desktopChartContainer);
+            chartContainers.forEach(desktopChartContainer);
+        }
+    }
+
+    function phoneChartContainer(ele, i) {
+        if (i < 1) {
+            ele.style.display = "flex";
+        } else {
+            ele.style.display = "none";
+        }
+    }
+
+    function tabletChartContainer(ele, i) {
+        if (i < 2) {
+            ele.style.display = "flex";
+        } else {
+            ele.style.display = "none";
+        }
+    }
+
+    function laptopChartContainer(ele, i) {
+        if (i < 3) {
+            ele.style.display = "flex";
+        } else {
+            ele.style.display = "none";
+        }
+    }
+
+    function desktopChartContainer(ele, i) {
+        ele.style.display = "flex";
+    }
+
+    navButtonsList.addEventListener("click", event => {
+        const { target } = event;
+        const visibleVars = target.dataset.vars.split(",");
+
+        chartHeaderContainers.forEach((chartHeaderContainer, i) => {
+            chartHeaderContainer.style.display = "none";
+            visibleVars.forEach(visibleVar => {
+                const index = parseInt(visibleVar);
+                if ((index - 1) === i) {
+                    chartHeaderContainers[index - 1].style.display = "flex";
+                }
+            });
+        });
+
+        chartContainers.forEach((chartContainer, i) => {
+            chartContainer.style.display = "none";
+            visibleVars.forEach(visibleVar => {
+                const index = parseInt(visibleVar);
+                if ((index - 1) === i) {
+                    chartContainers[index - 1].style.display = "flex";
+                }
+            });
+        });
+    });
+
+    let resizeTimer;
+    window.addEventListener("resize", function(e) {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            reportWindowSize(e);
+
+            variables.forEach(v => {
+                drawChart(v);
+            });
+
+        }, 100);
+
+    });
+
+    function drawChart(input) {
+        let eleId = input;
+        let legendComponentEle = document.getElementById(`${eleId}Chart`);
+        while (legendComponentEle.firstChild) {
+            legendComponentEle.removeChild(legendComponentEle.firstChild);
+        }
+
+        let chartDiv = document.getElementById(`${eleId}ChartContainer`);
+        let svgChart = d3.select(`#${eleId}Chart`).append("svg");
+
+        // Extract the width and height that was computed by CSS.
+        let chartWidth = chartDiv.clientWidth;
+        let chartHeight = chartDiv.clientHeight;
+
+        // set the dimensions and margins of the graph
+        const margin = {top: 0, right: 0, bottom: 0, left: 0},
+            width = chartWidth - margin.left - margin.right,
+            height = chartHeight - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        svgChart
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("width", `${width}`)
+            .attr("height", `${height}`)
+            .append("g")
+            .attr("transform",
+                `translate(${margin.left}, ${margin.top})`);
+
+        //Read the data
+        d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv").then( function(data) {
+
+            // group the data: one array for each value of the X axis.
+            const sumstat = d3.group(data, d => d.year);
+
+            // Stack the data: each group will be represented on top of each other
+            const mygroups = ["Helen", "Amanda", "Ashley"] // list of group names
+            const mygroup = [1,2,3] // list of group names
+            const stackedData = d3.stack()
+                .keys(mygroup)
+                .value(function(d, key){
+                    return d[1][key].n
+                })
+                (sumstat)
+
+            // Add X axis --> it is a date format
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, function(d) { return d.year; }))
+                .range([ 0, width ]);
+            svgChart.append("g")
+                .attr("transform", `translate(0, ${height})`);
+
+            // Add Y axis
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return +d.n; })*1.2])
+                .range([ height, 0 ]);
+
+            // color palette
+            const color = d3.scaleOrdinal()
+                .domain(mygroups)
+                .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+
+            // Show the areas
+            svgChart
+                .selectAll("mylayers")
+                .data(stackedData)
+                .join("path")
+                .style("fill", function(d) { name = mygroups[d.key-1] ;  return color(name); })
+                .attr("d", d3.area()
+                    .x(function(d, i) { return x(d.data[0]); })
+                    .y0(function(d) { return y(d[0]); })
+                    .y1(function(d) { return y(d[1]); })
+                )
+        })
+    }
+
+    //window.addEventListener("resize", drawChart);
+
+
+    /*
+    const links = document.querySelectorAll('.copy-click');
+    const cls = {
+        copied: 'is-copied',
+        hover: 'is-hovered'
+    };
+    const copyToClipboard = str => {
+        const el = document.createElement('input');
+        str.dataset.copyString ? el.value = str.dataset.copyString : el.value = str.text;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.opacity = 0;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    };
+    const clickInteraction = e => {
+        e.preventDefault();
+        copyToClipboard(e.target);
+        e.target.classList.add(cls.copied);
+        setTimeout(() => e.target.classList.remove(cls.copied), 1000);
+        setTimeout(() => e.target.classList.remove(cls.hover), 700);
+    };
+    Array.from(links).forEach(link => {
+        link.addEventListener('click', e => clickInteraction(e));
+        link.addEventListener('mouseover', e => e.target.classList.add(cls.hover));
+        link.addEventListener('mouseleave', e => {
+            if (!e.target.classList.contains(cls.copied)) {
+                e.target.classList.remove(cls.hover);
+            }
+        });
+    });
+    */
+</script>
+
+
+</body>
+</html>

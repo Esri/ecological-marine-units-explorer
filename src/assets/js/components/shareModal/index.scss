@@ -1,0 +1,22 @@
+.modal {
+  max-width: 22rem !important;
+}
+.share-modal-column {
+  float: left;
+  height: 30px;
+}
+
+.share-modal-left {
+
+}
+
+.share-modal-right {
+
+}
+
+/* Clear floats after the columns */
+.share-modal-row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
