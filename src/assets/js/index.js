@@ -20,28 +20,20 @@ defineCustomElements(window, {
 import config from './config.json';
 import * as d3 from "d3";
 import * as UIManager from "./utils/UIManager";
-// import SceneLayer from "@arcgis/core/layers/SceneLayer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapView from "@arcgis/core/views/MapView";
 import SceneView from "@arcgis/core/views/SceneView";
 
 import * as Menu from "./components/menu/";
 import * as ViewManager from "./utils/ViewManager";
-// import * as UrlManager from "./utils/UrlManager";
-// import Camera from "@arcgis/core/Camera";
-// import Point from "@arcgis/core/geometry/Point";
-// import * as watchUtils from "@arcgis/core/core/watchUtils";
 import * as ErrorHandler from "./utils/ErrorHandler";
 import * as OverviewMap from "./components/overviewMap";
 import * as WidgetManager from "./components/widgets";
 import * as QueryUtils from "./utils/QueryUtils";
 import PubSub from "pubsub-js";
-import * as UrlManager from "./utils/UrlManager";
 import * as watchUtils from "@arcgis/core/core/watchUtils";
 import SceneLayer from "@arcgis/core/layers/SceneLayer";
 import Handles from "@arcgis/core/core/Handles";
-import marker from "../img/marker.png";
-import Slider from "@arcgis/core/widgets/Slider";
 
 const appContainerEle = document.querySelector(".content-container");
 const loadingIndicatorEle = document.getElementById("appLoadingIndicator");
@@ -152,12 +144,6 @@ PubSub.subscribe("View Source Updated", (msg, data) => {
         setShowHistoricalDataValue(false);
         showChangeLayer = false;
     }
-
-    // update URL source type
-    // let params = new URLSearchParams(location.search);
-    //showHistoricalData = getParam(params, "showChange");
-    // UrlManager.setParam(params, "showChange", showHistoricalData);
-    // UrlManager.updateParams(params);
 });
 
 watchUtils.whenFalseOnce(active, "updating", viewUpdatingHandler);
@@ -166,9 +152,6 @@ ViewManager.webScene.load()
     .then(mapLoadHandler)
     .then(sceneLayersLoadHandler)
     .then(function(layers) {
-        console.log("--- WebScene: All " + layers.length + " layers loaded.");
-        // watchUtils.whenTrue(sceneView, "stationary", stationaryHandler);
-
         sceneView.on("click", viewClickHandler);
     })
     .catch(ErrorHandler.errorHandler);
@@ -177,17 +160,6 @@ ViewManager.webMap.load()
     .then(mapLoadHandler)
     .then(mapLayersLoadHandler)
     .then(function(layers) {
-        console.log("--- WebMap: All " + layers.length + " layers loaded.");
-        // layers.forEach(layer => {
-        //      if (layer.title === "EMU_2018_Boundaries") {
-        //          console.debug(layer);
-        //          layer.filter = {
-        //              where: "Depth_Level = 1"
-        //          };
-        //      }
-        // });
-        // watchUtils.whenTrue(mapView, "stationary", stationaryHandler);
-
         mapView.on("click", viewClickHandler);
     })
     .catch(ErrorHandler.errorHandler);
@@ -227,32 +199,6 @@ function viewUpdatingHandler(view) {
     Menu.initMenu(viewType, contentType);
     OverviewMap.initOverviewMap(sceneView, mapView);
     WidgetManager.initWidgets(mapView, sceneView);
-
-    // const valueSlider = new Slider({
-    //     container: "value-slider",
-    //     min: -5500,
-    //     max: 0,
-    //     values: [0, -5,-1,-15,-20,-25,-30,-35,-40,-45,-50,-55,-60,-65,-70,-75,-80,-85,-90,-95,-100,-125,-150,-175,-200],
-    //     steps: [0, -5,-1,-15,-20,-25,-30,-35,-40,-45,-50,-55,-60,-65,-70,-75,-80,-85,-90,-95,-100,-125,-150,-175,-200],
-    //     snapOnClickEnabled: true,
-    //     visibleElements: {
-    //         labels: true,
-    //         rangeLabels: true
-    //     },
-    //     layout: "vertical"
-    // });
-
-    /*if (showHistoricalData) {
-        ViewManager.webScene.add(sceneLayer);
-        const contentMenuItem = document.querySelector(".emu-change-layer");
-        UIManager.addClass(contentMenuItem, "content-item-selected");
-    } else {
-        const contentChangeMenuItem = document.querySelector(".emu-current-layer");
-        UIManager.addClass(contentChangeMenuItem, "content-item-selected");
-    }
-
-    if (selectedMapPoint)
-        viewClickHandler(selectedMapPoint);*/
 }
 
 
@@ -280,7 +226,6 @@ function switchView() {
 const emuVariables = [config.TEMP, config.SALINITY, config.DISSOLVED_O2, config.PHOSPHATE, config.NITRATE, config.SILICATE];
 let verticalProfileData = [];
 let scatterPlotData = [];
-//let highlightedList = [];
 let handles = new Handles();
 let viewClickHandlerEvent = null;
 //
@@ -409,20 +354,6 @@ function viewClickHandler(event) {
             // ViewManager.updateGraphic(verticalProfileData[0].geometry, [appConfig.sceneView, appConfig.mapView]);
             ViewManager.updateGraphic(verticalProfileData[0].geometry, [sceneView, mapView]);
 
-            // appConfig.activeView.hitTest(event)
-            //     .then((hitTestResult) => {
-            //         const { results } = hitTestResult;
-            //         if (results.length > 0) {
-            //             const result = results[0];
-            //             const graphic = result.graphic;
-            //             const attributes = graphic.attributes;
-            //             const objectId = attributes.OBJECTID;
-            //             emuKeyClickHandler(objectId);
-            //         }
-            //     })
-            //     .catch((error) => {
-            //         console.error(error);
-            //     });
             active.hitTest(event)
                 .then((hitTestResult) => {
                     const { results } = hitTestResult;
@@ -437,16 +368,6 @@ function viewClickHandler(event) {
                 .catch((error) => {
                     console.error(error);
                 });
-
-
-            // update URL params
-            /*selX = selectedMapPoint.x;
-            selY = selectedMapPoint.y;
-
-            let params = new URLSearchParams(location.search);
-            UrlManager.setParam(params, "selX", selX.toString());
-            UrlManager.setParam(params, "selY", selY.toString());
-            UrlManager.updateParams(params);*/
 
         } else {
 
@@ -1084,9 +1005,6 @@ function updateChart(params) {
 
 
     function scatterPlotPointMouseOverHandler(event, d) {
-        let time = (this.parentNode.attributes.type.value === "2013") ? "2013" : "2018";
-        let v = `${varName}_${time}`;
-
         let unit = ``;
         if (varName === config.TEMP) {
             unit = `&#176;C`;
@@ -1096,13 +1014,19 @@ function updateChart(params) {
             unit = "µmol/l";
         }
 
+        const { seriesName } = d;
         let styles = `current`;
-        if (time === `2013`) {
+        if (seriesName === `temp_2013` ||
+            seriesName === `salinity_2013` ||
+            seriesName === `dissO2_2013` ||
+            seriesName === `phosphate_2013` ||
+            seriesName === `nitrate_2013` ||
+            seriesName === `silicate_2013`) {
             styles = `historicalPoints`;
         }
 
         let depthValue = d.data[config.UNIT_TOP];
-        let emuValue = d.data[v].toFixed(2);
+        let emuValue = d.data[d.seriesName].toFixed(2);
         let formattedDepth = UIManager.formatValue(depthValue);
 
         scatterPlotTooltip.html(`
