@@ -1,0 +1,14 @@
+#depth-slider-container .esri-widget {
+    background: transparent;
+}
+
+#depth-slider-container .esri-widget .esri-slider__label {
+    background: rgba(0,0,0,.7);
+    min-width: 40px;
+    font-size: .8rem;
+    color: #4da6ff;
+}
+
+#depth-slider-container .esri-widget .esri-slider__thumb {
+    border-color: #4da6ff;
+}
