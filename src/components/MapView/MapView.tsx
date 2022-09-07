@@ -79,7 +79,7 @@ const MapView: React.FC<Props> = ({
     return (
         <>
             <div
-                className="absolute top-12 md:top-0 left-0 w-full h-full"
+                className="absolute top-12 md:top-0 left-0 bottom-0 w-full"
                 ref={mapDivRef}
             ></div>
             {mapView
