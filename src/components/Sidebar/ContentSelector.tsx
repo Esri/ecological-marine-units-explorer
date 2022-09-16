@@ -16,7 +16,7 @@ const ContentSelector = () => {
 
     return (
         <div className="pt-4 pb-2 border-t border-custom-blue border-opacity-50">
-            <h4 className="text-custom-light-blue font-semibold">Conetnt</h4>
+            <h4 className="text-custom-light-blue font-semibold">Content</h4>
 
             <div className="flex">
                 <SelectionCard
